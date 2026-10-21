@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>LEGACY — Beyond the Stars</title>
+<style>
+:root{--bg:#050611;--panel:#101326;--cyan:#53eaff;--purple:#984bff;--muted:#a2a9c7;--line:#8af4ff2b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#222052 0%,var(--bg) 54%);color:#fff;font-family:Arial,sans-serif;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+button:disabled{cursor:not-allowed;opacity:.4}
+.hidden{display:none!important}
+#cinematic{position:fixed;inset:0;z-index:100;display:grid;place-items:center;overflow:hidden;background:#02030a;transition:background 1.5s,opacity 1s,transform 1s}
+#cinematic.cosmos{background:radial-gradient(ellipse at center,#17113b 0%,#070919 50%,#02030a 100%)}
+.stars{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1px 1px at 15% 22%,#fff 99%,transparent),radial-gradient(2px 2px at 73% 17%,#80caff 99%,transparent),radial-gradient(1px 1px at 42% 74%,#fff 99%,transparent),radial-gradient(2px 2px at 84% 65%,#a78bfa 99%,transparent),radial-gradient(1px 1px at 22% 81%,#fff 99%,transparent),radial-gradient(1px 1px at 61% 46%,#fff 99%,transparent);opacity:0;transition:opacity 2s}
+.cosmos .stars{opacity:1;animation:star-drift 24s linear infinite}@keyframes star-drift{to{transform:rotate(8deg) scale(1.08)}}
+#story{position:relative;z-index:5;width:min(90%,430px);text-align:center;padding:20px;margin-top:130px;opacity:0;transform:translateY(12px);transition:opacity .6s,transform .6s}
+#story.visible{opacity:1;transform:translateY(0)}
+.kicker{color:var(--cyan);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:16px}
+#story h1{font-size:clamp(25px,7vw,39px);line-height:1.15;letter-spacing:1px;margin:0 0 18px;text-shadow:0 0 25px #744cff77}
+#story p{color:#c4c9df;font-size:15px;line-height:1.9;white-space:pre-line;min-height:105px}
+#tap-hint{color:var(--cyan);font-size:11px;letter-spacing:2px;margin-top:22px;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{opacity:.4}}
+#old-coin{position:absolute;top:calc(50% - 170px);left:50%;width:116px;height:116px;margin-left:-58px;border-radius:50%;border:3px solid #ffe5a0;background:radial-gradient(circle at 32% 25%,#fff7cc,#d8a63b 38%,#68411a 75%,#170d20);box-shadow:0 0 30px #ffcf6666,inset 0 0 15px #fff8;color:#3c2455;font-size:45px;font-weight:900;opacity:0;transform:translateY(-110px) scale(.2);transition:opacity 1.3s,transform 1.3s;z-index:6}
+#old-coin.arrived{opacity:1;transform:translateY(0) scale(1)}
+/* Hairline fractures build gradually; the coin stays whole until the final story beat. */
+#old-coin.crack1{
+  background-image:
+    linear-gradient(116deg,transparent 48.7%,#fff9d9 49.05%,#38213a 49.45%,transparent 49.9%),
+    radial-gradient(circle at 28% 19%,#fff9db 0%,#f4d276 5%,#b9792d 19%,#6a3a20 48%,#24122d 72%,#090813 100%);
+}
+#old-coin.crack2{
+  background-image:
+    linear-gradient(116deg,transparent 48.7%,#fff 49.05%,#38213a 49.45%,transparent 49.9%),
+    linear-gradient(24deg,transparent 60.1%,#fff7c9 60.35%,#39203b 60.7%,transparent 61.05%),
+    linear-gradient(174deg,transparent 31.5%,#fff7c9 31.8%,#39203b 32.15%,transparent 32.5%),
+    radial-gradient(circle at 28% 19%,#fff9db 0%,#f4d276 5%,#b9792d 19%,#6a3a20 48%,#24122d 72%,#090813 100%);
+}
+#old-coin.crack3{
+  background-image:
+    linear-gradient(116deg,transparent 48.7%,#fff 49.05%,#211426 49.45%,transparent 49.9%),
+    linear-gradient(24deg,transparent 60.1%,#fff7c9 60.35%,#39203b 60.7%,transparent 61.05%),
+    linear-gradient(174deg,transparent 31.5%,#fff7c9 31.8%,#39203b 32.15%,transparent 32.5%),
+    linear-gradient(72deg,transparent 72.5%,#fff8d5 72.8%,#39203b 73.1%,transparent 73.45%),
+    radial-gradient(circle at 28% 19%,#fff9db 0%,#f4d276 5%,#b9792d 19%,#6a3a20 48%,#24122d 72%,#090813 100%);
+  filter:brightness(1.16) drop-shadow(0 0 18px #ffc96555);
+}
+#old-coin.shatter{opacity:0;transform:scale(.88) rotate(-9deg);filter:brightness(2.2);transition:opacity .48s ease,transform .48s ease,filter .48s ease;pointer-events:none}
+.orbit{position:absolute;left:50%;top:50%;border:1px solid #8b6cff44;border-radius:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity 1.2s}
+.cosmos .orbit{opacity:1}
+.orbit.one{width:190px;height:190px}.orbit.two{width:285px;height:285px;transform:translate(-50%,-50%) rotate(35deg)}.orbit.three{width:365px;height:365px;transform:translate(-50%,-50%) rotate(-25deg)}.orbit.four{width:445px;height:445px;transform:translate(-50%,-50%) rotate(12deg)}
+.moon{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px;border-radius:50%;display:grid;place-items:center;border:1px solid #ffffff88;font-size:20px;background:radial-gradient(circle at 30% 25%,#fff,#a5a7c8 20%,#39365e 70%);box-shadow:0 0 16px #7861ff77;animation:orbit 8s linear infinite}
+.orbit.two .moon{animation-duration:12s}.orbit.three .moon{animation-duration:17s}.orbit.four .moon{animation-duration:22s}
+@keyframes orbit{from{transform:rotate(0deg) translateX(var(--radius,95px)) rotate(0deg)}to{transform:rotate(360deg) translateX(var(--radius,95px)) rotate(-360deg)}}
+.orbit.one .moon{--radius:95px}.orbit.two .moon{--radius:142px}.orbit.three .moon{--radius:182px}.orbit.four .moon{--radius:222px}
+#legacy-orb{position:absolute;top:50%;left:50%;width:124px;height:124px;margin:-62px;border:2px solid #a8f8ff;border-radius:50%;background:radial-gradient(circle at 30% 24%,#fff,#62eaff 8%,#5b4bff 35%,#180a3e 75%);box-shadow:0 0 30px #53eaff,0 0 90px #8748ff,inset 0 0 25px #fff7;color:#fff;font-size:57px;font-weight:900;opacity:0;transform:scale(.1);transition:all 1.5s}
+.cosmos #legacy-orb{opacity:1;transform:scale(1);animation:core-breathe 3.2s ease-in-out infinite}@keyframes core-breathe{0%,100%{filter:brightness(1);box-shadow:0 0 30px #53eaff,0 0 90px #8748ff,inset 0 0 25px #fff7}50%{filter:brightness(1.3);box-shadow:0 0 45px #53eaff,0 0 130px #8748ff,inset 0 0 30px #fff}}
+#solar-title{position:absolute;top:8%;width:100%;text-align:center;letter-spacing:5px;color:var(--cyan);font-size:12px;opacity:0;transition:opacity 1s}
+.cosmos #solar-title{opacity:1}
+#enter{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:min(80%,300px);padding:16px;color:white;font-weight:900;letter-spacing:2px;border:0;border-radius:12px;background:linear-gradient(100deg,#8c38ff,#13cfff);opacity:0;pointer-events:none;transition:opacity 1s;z-index:10}
+.cosmos.ready #enter{opacity:1;pointer-events:auto}
+#game{max-width:430px;margin:auto;padding:18px 18px calc(105px + env(safe-area-inset-bottom));text-align:center;background:radial-gradient(ellipse at 50% 30%,#191536,transparent 60%);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid #ffffff16}
+.brand{font-size:22px;font-weight:900;letter-spacing:5px}.brand span{color:var(--cyan)}.status{color:#80ffc5;font-size:10px;display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.label{color:var(--muted);font-size:11px;letter-spacing:3px;margin-top:25px}
+#balance{font-size:clamp(36px,10vw,48px);font-weight:900;margin:8px;overflow-wrap:anywhere}
+.currency{color:var(--cyan);font-size:11px;letter-spacing:3px}
+.balance-row{display:flex;align-items:center;justify-content:center;gap:10px}.balance-symbol{color:#a8f8ff;font-size:29px;text-shadow:0 0 18px #53eaff}
+.level-pill{display:inline-block;margin-top:13px;padding:7px 12px;border:1px solid #53eaff44;border-radius:30px;background:#53eaff0c;color:#b8f7ff;font-size:10px;letter-spacing:1.5px}
+.game-orb-zone{height:280px;display:grid;place-items:center;position:relative;margin-top:8px}
+.orb-glow{position:absolute;width:190px;height:190px;border-radius:50%;background:conic-gradient(from 0deg,#693cff35,#53eaff55,#693cff35);filter:blur(32px);pointer-events:none;animation:glow-spin 12s linear infinite,glow-pulse 3s ease-in-out infinite}@keyframes glow-spin{to{transform:rotate(360deg)}}@keyframes glow-pulse{50%{opacity:.55;scale:1.12}}
+#game-orb{position:relative;z-index:1;width:165px;height:165px;border-radius:50%;border:1px solid #c6fbff;background:radial-gradient(circle at 30% 24%,#fff 0%,#a5fbff 5%,#5593ff 19%,#633be5 47%,#140d35 76%);box-shadow:0 0 28px #53eaffaa,0 0 78px #6851ff77,inset -12px -15px 25px #050610;color:white;font-size:65px;font-weight:900;text-shadow:0 0 20px var(--cyan);transition:transform .12s,filter .2s,box-shadow .2s;touch-action:manipulation;animation:orb-float 4s ease-in-out infinite;isolation:isolate}#game-orb:before{content:"";position:absolute;inset:9px;border-radius:50%;border:1px solid #ffffff35;box-shadow:inset 0 0 18px #bffcff44;pointer-events:none}#game-orb:after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid #8bf5ff30;pointer-events:none}@keyframes orb-float{0%,100%{translate:0 0}50%{translate:0 -5px}}
+.tap-ring{position:absolute;width:145px;height:145px;border:2px solid #80f5ff;border-radius:50%;transform:translate(-50%,-50%) scale(.65);opacity:.8;pointer-events:none;z-index:0;animation:ring-out .55s ease-out forwards}@keyframes ring-out{to{transform:translate(-50%,-50%) scale(1.8);opacity:0}}
+#game-orb:active{transform:scale(.9);filter:brightness(1.25);box-shadow:0 0 48px #53eaffdd,0 0 105px #6851ffbb,inset -12px -15px 25px #050610;animation:none}
+.tap-caption{color:#aeb6d5;font-size:10px;letter-spacing:2px;margin:-5px 0 22px}
+.energy-card{padding:16px;border:1px solid #ffffff16;border-radius:16px;background:linear-gradient(145deg,#141827,#0b0e19);text-align:left}
+.energy-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:9px}.energy-head strong{color:var(--cyan)}
+.bar{height:8px;border-radius:10px;background:#25283b;overflow:hidden}#energy-fill{height:100%;width:100%;background:linear-gradient(90deg,#6851ff,var(--cyan));transition:width .2s}
+.energy-note,.section-subtitle{color:var(--muted);font-size:12px;line-height:1.7}.energy-note{margin:10px 0 0}
+.hint{color:var(--muted);font-size:11px;margin:12px 0 22px}
+.panel{position:relative;overflow:hidden;background:linear-gradient(145deg,#171b31,#0b0e1b);border:1px solid #ffffff19;border-radius:18px;padding:17px;margin-top:14px;text-align:left;box-shadow:0 12px 30px #0002;transition:transform .2s,border-color .2s,box-shadow .2s}.panel:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,#53eaff77,transparent);opacity:.65}.panel:hover{transform:translateY(-2px);border-color:#53eaff55;box-shadow:0 14px 35px #0004,0 0 24px #53eaff0c}
+.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;font-size:13px}
+.tag{color:var(--cyan);font-size:10px}
+.upgrade-row{display:flex;align-items:center;gap:12px}
+.upgrade-info{flex:1;font-size:12px;min-width:0}.upgrade-info p{color:var(--muted);font-size:11px;line-height:1.5;margin:7px 0}
+.buy{padding:11px 12px;border-radius:10px;border:1px solid #53eaff77;background:linear-gradient(135deg,#53eaff1c,#984bff22);color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:.7px;box-shadow:inset 0 0 16px #53eaff08;transition:transform .15s,background .2s,box-shadow .2s;white-space:nowrap}.buy:not(:disabled):active{transform:scale(.96)}.buy:not(:disabled):hover{background:#53eaff25;box-shadow:0 0 20px #53eaff18}
+.reward{width:100%;padding:13px;border:1px solid #a855f755;border-radius:10px;background:#a855f714;color:white;font-weight:bold;font-size:12px}
+#message{color:var(--cyan);font-size:11px;text-align:center;min-height:16px;margin:18px 0 0;overflow-wrap:anywhere}
+#tutorial{position:fixed;inset:0;z-index:80;background:#02030acc;display:grid;place-items:center;padding:24px}
+.tutorial-card{width:min(100%,360px);padding:24px;border:1px solid #53eaff77;border-radius:18px;background:#101326;text-align:center;box-shadow:0 0 50px #6851ff44}
+.tutorial-card h2{color:var(--cyan);letter-spacing:2px}.tutorial-card p{color:#c4c9df;line-height:1.8;font-size:14px}
+.tutorial-card button{width:100%;padding:14px;border:0;border-radius:10px;background:linear-gradient(100deg,#853cff,#16cfff);color:white;font-weight:bold}
+.float{position:absolute;z-index:5;pointer-events:none;color:white;font-weight:900;font-size:18px;text-shadow:0 0 14px #53eaff,0 0 26px #984bff;animation:floatup .85s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes floatup{0%{opacity:0;transform:translateY(12px) scale(.65)}18%{opacity:1;transform:translateY(0) scale(1.15)}100%{opacity:0;transform:translateY(-78px) scale(.92)}}
+#sound-toggle{border:1px solid #53eaff44;background:#53eaff0d;color:var(--cyan);border-radius:20px;padding:7px 10px;font-size:9px;font-weight:bold;letter-spacing:1px}#sound-toggle[aria-pressed="true"]{background:#53eaff1b;box-shadow:0 0 16px #53eaff16}.status{display:flex;align-items:center;gap:8px}.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#80ffc5;box-shadow:0 0 10px #80ffc5;animation:status-pulse 2s infinite}@keyframes status-pulse{50%{opacity:.45;box-shadow:0 0 2px #80ffc5}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+.game-tab{text-align:center}
+.section-heading{margin-top:27px;font-size:23px;font-weight:900;letter-spacing:2px}
+.section-subtitle{margin:8px 0 18px}
+#tab-boosts .panel,#tab-earn .panel,#tab-friends .panel{margin-top:13px}
+.shop-icon{flex-shrink:0;width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#53eaff20,#984bff1b);border:1px solid #53eaff3d;color:var(--cyan);font-size:24px;box-shadow:inset 0 0 18px #53eaff0b,0 0 20px #53eaff08}
+.feature-panel{text-align:center;padding:25px 20px}.feature-panel h3{margin:12px 0}.feature-panel p{color:var(--muted);font-size:13px;line-height:1.8}
+.feature-icon{font-size:38px;color:var(--cyan);text-shadow:0 0 22px #53eaff88}
+.bottom-nav{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,430px);display:grid;grid-template-columns:repeat(4,1fr);padding:10px 8px calc(10px + env(safe-area-inset-bottom));border-top:1px solid #ffffff16;background:#090b16f5;backdrop-filter:blur(18px)}
+.nav-item{border:0;background:transparent;color:#777f9e;display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 2px}
+.nav-item span{font-size:22px}.nav-item small{font-size:10px}.nav-item.active{color:var(--cyan)}.nav-item{transition:color .2s,transform .2s}.nav-item:active{transform:scale(.94)}.nav-item.active span{text-shadow:0 0 15px #53eaff88}
+/* LEGACY cinematic intro upgrade */
+#cinematic{isolation:isolate;background:radial-gradient(ellipse at 50% 42%,#101d4c 0%,#07091b 42%,#010208 100%)}
+.intro-nebula{position:absolute;inset:-20%;pointer-events:none;opacity:.75;background:radial-gradient(ellipse at 18% 24%,#1749a955 0%,transparent 34%),radial-gradient(ellipse at 82% 38%,#8d29ff35 0%,transparent 32%),radial-gradient(ellipse at 50% 90%,#05d9ff18 0%,transparent 36%);filter:blur(20px);animation:nebula-drift 18s ease-in-out infinite alternate}
+.intro-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 28%,#01020855 72%,#010208e8 120%);z-index:2}
+.intro-scanlines{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.09;background:repeating-linear-gradient(0deg,transparent 0 3px,#b9faff 4px,transparent 5px)}
+.intro-hud{position:absolute;z-index:8;top:calc(22px + env(safe-area-inset-top));left:22px;right:22px;display:flex;justify-content:space-between;gap:12px;color:#8997c7;font-size:8px;letter-spacing:2px}
+.intro-hud i{color:var(--cyan);font-style:normal}.intro-hud #intro-status{display:flex;align-items:center;gap:7px;color:#8df6d2}.intro-hud b{width:5px;height:5px;border-radius:50%;background:#8df6d2;box-shadow:0 0 10px #8df6d2;animation:status-pulse 1.5s infinite}
+#story{width:min(90%,440px);margin-top:150px;padding:24px 22px 20px;border:1px solid #9cecff20;border-radius:20px;background:linear-gradient(145deg,#081126a6,#0807196b);backdrop-filter:blur(9px);box-shadow:0 20px 80px #0004, inset 0 1px #ffffff0a}
+#story.visible{animation:story-arrive .65s cubic-bezier(.2,.75,.25,1) both}
+.story-progress{height:2px;background:#ffffff16;margin:0 auto 19px;overflow:hidden;border-radius:3px;width:100%}
+#story-progress-fill{display:block;width:0;height:100%;background:linear-gradient(90deg,#984bff,#53eaff);box-shadow:0 0 12px #53eaff;transition:width .55s ease}
+.kicker{display:flex;align-items:center;justify-content:center;gap:9px;color:#8defff;font-size:9px;letter-spacing:4px;margin-bottom:14px}
+.kicker:before,.kicker:after{content:"";width:18px;height:1px;background:linear-gradient(90deg,transparent,#53eaff)}.kicker:after{transform:scaleX(-1)}
+#story h1{font-size:clamp(25px,7.3vw,37px);letter-spacing:1.8px;line-height:1.12;margin:0 0 14px;background:linear-gradient(100deg,#fff 20%,#a4f7ff 52%,#c3a2ff 80%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 35px #53eaff14}
+#story p{font-size:14px;line-height:1.8;min-height:100px;color:#c8d2ec;margin:0 auto;max-width:350px}
+#tap-hint{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:20px;color:#c9fbff;font-size:9px;letter-spacing:2.5px;text-shadow:0 0 12px #53eaff55}
+.hint-pulse{width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation:hint-beat 1.2s ease-in-out infinite}
+.intro-footnote{font-size:7px;letter-spacing:3px;color:#6f7ba7;margin-top:17px}
+#old-coin{top:calc(50% - 205px);width:126px;height:126px;margin-left:-63px;border:1px solid #fff0bd;background:radial-gradient(circle at 29% 22%,#fffde6 0%,#f6d978 7%,#d39a37 27%,#74421d 64%,#20102c 82%);color:#41234c;font-size:49px;box-shadow:0 0 0 6px #f9d77b0b,0 0 24px #ffc96599,0 0 70px #ff9e3740,inset 0 0 24px #fff9,inset -10px -12px 18px #301044;animation:coin-idle 5s ease-in-out infinite;cursor:pointer}
+#old-coin:before{content:"";position:absolute;inset:7px;border-radius:50%;border:1px solid #fff4bf99;box-shadow:inset 0 0 0 4px #6a3d1d55,inset 0 0 20px #fff5;pointer-events:none}
+#old-coin:after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px solid #ffd98c55;box-shadow:0 0 24px #ffc96522;animation:coin-halo 3.5s linear infinite;pointer-events:none}
+#old-coin.arrived{animation:coin-arrive 1.2s cubic-bezier(.16,.8,.24,1) both}
+#old-coin.crack1,#old-coin.crack2,#old-coin.crack3{box-shadow:0 0 25px #fff2a9,0 0 90px #ff9e37aa,inset 0 0 28px #fff}
+.cosmos #story{opacity:0;pointer-events:none;transform:translateY(18px) scale(.97)}
+.cosmos #solar-title{top:calc(10% + env(safe-area-inset-top));font-size:10px;letter-spacing:5px;text-shadow:0 0 18px #53eaffaa}
+.orbit{border-color:#8b6cff65;box-shadow:0 0 18px #8057ff0c}
+.orbit.one{box-shadow:0 0 20px #53eaff16}.orbit.two{border-style:dashed}.moon{border-color:#d7d6ff99;box-shadow:0 0 20px #7861ff99,0 0 36px #53eaff22}
+#legacy-orb{border-color:#d9ffff;background:radial-gradient(circle at 31% 24%,#fff 0%,#b6ffff 5%,#54d9ff 14%,#6553ff 39%,#251052 72%,#080615 100%);box-shadow:0 0 30px #53eaff,0 0 90px #8748ff,inset 0 0 30px #fff9}
+#enter{bottom:calc(7% + env(safe-area-inset-bottom));border:1px solid #d7fbff99;box-shadow:0 0 30px #8b44ff4d,0 0 55px #11cfff20,inset 0 1px #ffffff88;letter-spacing:3px;animation:enter-glow 2.8s ease-in-out infinite}
+#enter:active{filter:brightness(1.25);transform:translateX(-50%) scale(.97)}
+@keyframes nebula-drift{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(2%,-1%,0) scale(1.08)}}
+@keyframes coin-idle{0%,100%{translate:0 0;rotate:-4deg}50%{translate:0 -7px;rotate:4deg}}
+@keyframes coin-arrive{0%{opacity:0;transform:translateY(-180px) scale(.25) rotate(-70deg)}65%{opacity:1;transform:translateY(8px) scale(1.08) rotate(8deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+@keyframes coin-halo{to{transform:rotate(360deg)}}
+@keyframes story-arrive{0%{opacity:0;transform:translateY(16px) scale(.985)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes hint-beat{50%{opacity:.35;transform:scale(.7)}}
+@keyframes enter-glow{0%,100%{box-shadow:0 0 25px #8b44ff3d,0 0 50px #11cfff18,inset 0 1px #ffffff88}50%{box-shadow:0 0 38px #8b44ff7a,0 0 70px #11cfff35,inset 0 1px #ffffffaa}}
+@media(max-height:740px){#story{margin-top:125px;padding:18px}#story p{min-height:82px;line-height:1.65}#old-coin{top:calc(50% - 185px);width:102px;height:102px;margin-left:-51px}}
+@media(max-height:620px){#story{margin-top:105px;padding:14px}#story p{min-height:65px;font-size:12px}#story h1{font-size:24px;margin-bottom:9px}.intro-footnote{display:none}#old-coin{top:calc(50% - 155px);width:82px;height:82px;margin-left:-41px}}
+@media(max-height:700px){#story{margin-top:110px}#old-coin{top:calc(50% - 145px);width:92px;height:92px;margin-left:-46px}.orbit.three{width:320px;height:320px}.orbit.four{width:370px;height:370px}}
+
+/* LEGACY CINEMATIC PASS — less dashboard, more film title sequence */
+#cinematic{background:#02030a;perspective:1100px;isolation:isolate}
+#cinematic:before{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(180deg,#02030a9c 0%,transparent 20%,transparent 48%,#02030a55 65%,#02030af2 100%)}
+#cinematic:after{content:"";position:absolute;inset:0;z-index:9;pointer-events:none;opacity:.18;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");mix-blend-mode:screen}
+.intro-nebula{inset:-35%;opacity:.8;filter:blur(32px);background:radial-gradient(ellipse at 50% 34%,#273a9b42 0%,transparent 22%),radial-gradient(ellipse at 22% 46%,#1749a955 0%,transparent 31%),radial-gradient(ellipse at 78% 40%,#8d29ff3c 0%,transparent 30%),radial-gradient(ellipse at 50% 75%,#05d9ff20 0%,transparent 38%);animation:nebula-drift 28s ease-in-out infinite alternate}
+.stars{opacity:.38;background-image:radial-gradient(1px 1px at 7% 18%,#fff 99%,transparent),radial-gradient(1px 1px at 17% 66%,#fff 99%,transparent),radial-gradient(2px 2px at 73% 17%,#b9eaff 99%,transparent),radial-gradient(1px 1px at 42% 74%,#fff 99%,transparent),radial-gradient(2px 2px at 84% 65%,#c8a7ff 99%,transparent),radial-gradient(1px 1px at 22% 81%,#fff 99%,transparent),radial-gradient(1px 1px at 61% 46%,#fff 99%,transparent),radial-gradient(1px 1px at 91% 31%,#fff 99%,transparent),radial-gradient(1px 1px at 33% 9%,#fff 99%,transparent),radial-gradient(1px 1px at 55% 28%,#a5e9ff 99%,transparent)}
+.cosmos .stars{opacity:.95;animation:star-drift 60s linear infinite}
+.intro-hud{top:calc(27px + env(safe-area-inset-top));left:clamp(22px,5vw,64px);right:clamp(22px,5vw,64px);font-size:8px;letter-spacing:3px;color:#a2afd4;text-shadow:0 1px 10px #000;z-index:11}
+#old-coin{top:36%;width:clamp(116px,22vw,164px);height:clamp(116px,22vw,164px);margin-left:clamp(-82px,-11vw,-58px);font-size:clamp(48px,9vw,66px);transform-style:preserve-3d;will-change:transform;filter:drop-shadow(0 28px 34px #0009);background:radial-gradient(circle at 28% 19%,#fff9db 0%,#f4d276 5%,#b9792d 19%,#6a3a20 48%,#24122d 72%,#090813 100%);box-shadow:0 0 0 1px #fff2bd66,0 0 0 7px #f4ca5d0c,0 0 35px #ffc96588,0 0 115px #ff9e3730,inset 0 0 0 5px #381e2d,inset 0 0 0 7px #e8bd5a55,inset 0 0 32px #fff7;transition:opacity 1.2s,transform 1.2s cubic-bezier(.16,.8,.24,1),filter 1s}
+#old-coin:before{inset:9px;border:1px solid #fff4bf99;box-shadow:inset 0 0 0 4px #6a3d1d55,inset 0 0 20px #fff5,0 0 0 1px #1b0e26}
+#old-coin:after{inset:-22px;border:1px solid #ffd98c35;box-shadow:0 0 45px #ffc96520;animation:coin-halo 9s linear infinite}
+#old-coin.arrived{animation:coin-arrive 1.8s cubic-bezier(.16,.8,.24,1) both}
+#story{position:absolute;top:auto;bottom:clamp(74px,11vh,120px);left:50%;width:min(86%,720px);margin:0;padding:0 12px 4px;border:0;border-radius:0;background:transparent;backdrop-filter:none;box-shadow:none;transform:translate(-50%,18px);text-align:center;z-index:7}
+#story.visible{opacity:1;transform:translate(-50%,0);animation:cinema-copy-in 1s cubic-bezier(.2,.7,.2,1) both}
+.story-progress{width:min(220px,48%);height:1px;background:#ffffff24;margin:0 auto 23px}
+#story-progress-fill{background:linear-gradient(90deg,#cba45e,#fff1c0);box-shadow:0 0 15px #ffd47a;transition:width .8s ease}
+.kicker{font-size:9px;letter-spacing:5px;color:#e7c986;margin-bottom:18px;text-shadow:0 0 20px #c79a4e55}
+#story h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(29px,6.6vw,57px);line-height:1.02;letter-spacing:clamp(1px,.45vw,4px);margin:0 0 18px;color:#fff;background:linear-gradient(180deg,#fff 5%,#d8e7ff 65%,#9db4e8 100%);-webkit-background-clip:text;background-clip:text;text-shadow:0 10px 35px #000c,0 0 36px #94c8ff18}
+#story p{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:clamp(13px,1.6vw,16px);line-height:1.8;letter-spacing:.25px;min-height:0;max-width:530px;color:#c4cbe0;margin:0 auto;text-shadow:0 2px 15px #000;white-space:pre-line}
+#tap-hint{display:flex;justify-content:center;align-items:center;gap:10px;color:#d9e8ff;font-size:8px;letter-spacing:3px;margin-top:25px;text-shadow:0 0 16px #53eaff55;animation:none}
+.hint-pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:#c9eaff;box-shadow:0 0 12px #53eaff;animation:hint-beat 1.8s ease-in-out infinite}
+.intro-footnote{font-size:7px;letter-spacing:4px;color:#6f7ba7;margin-top:18px}
+#solar-title{top:calc(15% + env(safe-area-inset-top));font-size:9px;letter-spacing:clamp(3px,1vw,7px);color:#c8d9ff;text-shadow:0 0 22px #53eaff88;z-index:7}
+.orbit{border-color:#9b9eff3c;box-shadow:0 0 35px #8057ff0b;filter:drop-shadow(0 0 12px #53eaff12)}
+.orbit.one{width:min(54vw,280px);height:min(54vw,280px);border-color:#92f3ff55}
+.orbit.two{width:min(76vw,410px);height:min(76vw,410px);border-style:solid;border-color:#ad8dff38}
+.orbit.three{width:min(88vw,480px);height:min(88vw,480px);border-color:#92a4ff24}.orbit.four{width:min(98vw,560px);height:min(98vw,560px);border-color:#f0c77920;border-style:dashed}
+.moon{width:clamp(30px,5vw,42px);height:clamp(30px,5vw,42px);margin:calc(clamp(30px,5vw,42px)/-2);font-size:clamp(15px,2.5vw,21px);font-weight:800;font-family:Arial,sans-serif;background:radial-gradient(circle at 30% 20%,#fff 0%,#b9caff 12%,#484a85 55%,#111127 100%);box-shadow:0 0 18px #7861ff77,0 0 42px #53eaff18;border:1px solid #ffffffa6}.moon.notcoin{color:#fff;background:radial-gradient(circle at 30% 20%,#fff 0%,#f5f5f5 24%,#bfc5d0 58%,#555b68 100%);font-weight:900;text-shadow:0 2px 4px #555;box-shadow:0 0 20px #dfe8ff66}.moon.hamster{font-size:clamp(17px,3vw,25px);background:radial-gradient(circle at 30% 20%,#ffe8b8,#a97542 58%,#38231b 100%);border-color:#f4d1a0}.moon.tapswap{color:#fff;background:radial-gradient(circle at 30% 20%,#c9ffef,#1dbf91 48%,#075a49 100%);text-shadow:0 2px 5px #064536}.moon.catizen{font-size:clamp(17px,3vw,25px);background:radial-gradient(circle at 30% 20%,#fff0ff,#b56ee8 48%,#4b1b70 100%);border-color:#edc7ff}
+#legacy-orb{width:clamp(110px,20vw,170px);height:clamp(110px,20vw,170px);margin:calc(clamp(110px,20vw,170px)/-2);font-size:clamp(50px,9vw,72px);border:1px solid #e4ffff;background:radial-gradient(circle at 31% 21%,#fff 0%,#b6ffff 4%,#54d9ff 12%,#6553ff 35%,#251052 62%,#080615 100%);box-shadow:0 0 40px #53eaff,0 0 120px #8748ff99,0 0 220px #4525ff40,inset 0 0 30px #fff9}
+#enter{bottom:calc(7% + env(safe-area-inset-bottom));width:min(76%,330px);padding:17px 20px;border:1px solid #d7fbff66;border-radius:2px;background:linear-gradient(100deg,#f0d69a,#fff0c9 40%,#9deeff 100%);color:#080b1b;font-size:10px;font-weight:800;letter-spacing:4px;box-shadow:0 0 35px #8b44ff35,0 0 80px #11cfff18;animation:enter-glow 3.6s ease-in-out infinite}
+#enter:before{content:"";position:absolute;inset:4px;border:1px solid #0c123333;pointer-events:none}
+#cinematic.leaving{transition:opacity 1.15s ease,transform 1.15s cubic-bezier(.7,0,.2,1);filter:brightness(1.6)}
+#cinematic.leaving:before{background:#02030a}
+@keyframes cinema-copy-in{0%{opacity:0;transform:translate(-50%,22px);filter:blur(8px)}100%{opacity:1;transform:translate(-50%,0);filter:blur(0)}}
+@keyframes coin-arrive{0%{opacity:0;transform:translateY(-36vh) scale(.25) rotate(-150deg)}58%{opacity:1;transform:translateY(12px) scale(1.06) rotate(12deg)}76%{transform:translateY(-4px) scale(.99) rotate(-3deg)}100%{opacity:1;transform:translateY(0) scale(1) rotate(0)}}
+@keyframes enter-glow{0%,100%{box-shadow:0 0 25px #8b44ff25,0 0 55px #11cfff12}50%{box-shadow:0 0 38px #8b44ff55,0 0 75px #11cfff28}}
+@media(max-height:740px){#old-coin{top:31%;width:100px;height:100px;margin-left:-50px}#story{bottom:calc(48px + env(safe-area-inset-bottom));padding:0 10px}#story h1{font-size:clamp(25px,5vw,40px);margin-bottom:10px}#story p{font-size:12px;line-height:1.6}#tap-hint{margin-top:15px}.intro-footnote{display:none}#solar-title{top:12%}}
+@media(max-height:560px){#old-coin{top:26%;width:78px;height:78px;margin-left:-39px}#story{bottom:28px}#story h1{font-size:25px;margin-bottom:8px}#story p{font-size:11px;line-height:1.45}#story-progress{margin-bottom:10px}.kicker{margin-bottom:9px}#tap-hint{margin-top:10px}.intro-hud{top:10px}}
+@media(prefers-reduced-motion:reduce){.intro-nebula,.moon,#old-coin:after,#old-coin.arrived,#legacy-orb,#enter{animation:none!important}#story.visible{animation:none}}
+
+
+
+.referral-panel{text-align:left}
+.referral-panel .feature-icon,.referral-panel h3{text-align:center}
+.ref-label{display:block;color:#8fa8d4;font-size:9px;letter-spacing:2px;margin:18px 0 8px}
+.ref-code-row,.ref-input-row{display:flex;align-items:center;gap:9px}
+.ref-code-row{padding:10px 11px;border:1px solid #8cecff2b;border-radius:10px;background:#03091799}
+#ref-code{flex:1;min-width:0;color:#d9faff;font-size:17px;letter-spacing:2px;overflow-wrap:anywhere}
+.ref-code-row .buy,.ref-input-row .buy{padding:10px 12px;min-height:42px;white-space:nowrap}
+#share-ref-link{width:100%;margin-top:4px;min-height:46px}
+.ref-divider{height:1px;background:linear-gradient(90deg,transparent,#8cecff30,transparent);margin:22px 0}
+#ref-input{width:100%;min-width:0;height:44px;padding:0 12px;color:#fff;background:#030917;border:1px solid #8cecff38;border-radius:8px;letter-spacing:1px;text-transform:uppercase}
+#ref-input:focus{outline:2px solid #8cecff66;outline-offset:2px}
+.ref-note{font-size:11px;line-height:1.6;color:#91a1c3;margin:12px 0 0}
+
+/* UNIFIED SPACE THEME — all game screens, not only the intro */
+:root{--bg:#030611;--panel:#0a1224;--cyan:#8cecff;--purple:#9878ff;--muted:#9eaccb;--line:#8cecff25}
+html{background:#02040c}
+body{position:relative;background:radial-gradient(ellipse at 50% 0%,#111d42 0%,#070b1b 37%,#02040b 78%,#010208 100%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;background-image:radial-gradient(1px 1px at 8% 16%,#fff 98%,transparent),radial-gradient(1px 1px at 27% 72%,#c6eaff 98%,transparent),radial-gradient(2px 2px at 68% 23%,#fff 98%,transparent),radial-gradient(1px 1px at 86% 61%,#b5caff 98%,transparent),radial-gradient(1px 1px at 46% 42%,#fff 98%,transparent),radial-gradient(1px 1px at 91% 88%,#fff 98%,transparent),radial-gradient(2px 2px at 14% 91%,#a7b9ff 98%,transparent),radial-gradient(1px 1px at 58% 83%,#fff 98%,transparent);background-size:100% 100%;animation:starfield-drift 55s linear infinite}
+body:after{content:"";position:fixed;z-index:0;pointer-events:none;width:min(100vw,700px);height:min(100vw,700px);left:50%;top:12%;transform:translateX(-50%);border-radius:50%;opacity:.22;background:radial-gradient(ellipse at 28% 30%,#2355a955,transparent 33%),radial-gradient(ellipse at 70% 48%,#7e3dce40,transparent 34%),radial-gradient(ellipse at center,transparent 55%,#536bff12 56%,transparent 57%);filter:blur(12px)}
+@keyframes starfield-drift{from{background-position:0 0}to{background-position:0 160px}}
+#game{position:relative;z-index:1;isolation:isolate;background:radial-gradient(ellipse at 50% 22%,#182b5a66,transparent 46%),radial-gradient(ellipse at 50% 80%,#4b26731c,transparent 40%)}
+#game:before{content:"";position:absolute;z-index:-1;top:185px;left:50%;width:250px;height:250px;transform:translateX(-50%);border:1px solid #94caff12;border-radius:50%;box-shadow:0 0 0 25px #9b8bff05,0 0 0 55px #9b8bff04;pointer-events:none}
+header{border-bottom-color:#9bdcff20}
+.brand{text-shadow:0 0 22px #7d83ff38}
+.status{color:#a9eaff}
+.energy-card,.panel{background:linear-gradient(145deg,#101d36eF,#080e1eeF 70%,#0a0a20f2);border-color:#8edfff24;box-shadow:inset 0 1px #ffffff08,0 12px 36px #0005,0 0 22px #4e7bff08;backdrop-filter:blur(12px)}
+.energy-card{position:relative;overflow:hidden}
+.energy-card:before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#9beaff80,transparent)}
+.panel:before{background:linear-gradient(90deg,transparent,#9b8bff88,#8cecff88,transparent)}
+.panel:hover{border-color:#8cecff50;box-shadow:0 14px 35px #0006,0 0 26px #8cecff0c}
+#balance{font-variant-numeric:tabular-nums;text-shadow:0 0 26px #67dfff30}
+.level-pill{background:linear-gradient(100deg,#53eaff0b,#9878ff12);border-color:#8cecff38}
+#game-orb{background:radial-gradient(circle at 31% 22%,#fff 0%,#b7f8ff 4%,#63d9ff 12%,#526bff 28%,#4520a5 52%,#10102c 76%,#030611 100%);box-shadow:0 0 25px #53eaff88,0 0 65px #6851ff55,0 0 115px #4525ff25,inset -13px -18px 28px #02030b;}
+#game-orb:before{border-color:#d8fcff40;box-shadow:inset 0 0 20px #bffcff38}
+.orb-glow{background:conic-gradient(from 0deg,#693cff25,#53eaff55,#a78bfa40,#693cff25);filter:blur(38px)}
+.bar{background:#1a2540;border:1px solid #8cecff14}
+#energy-fill{background:linear-gradient(90deg,#6654ff,#4fcaff,#a5f8ff);box-shadow:0 0 14px #53eaff55}
+.shop-icon{background:linear-gradient(145deg,#53eaff12,#984bff22);border-color:#8ceaff38}
+.buy{border-color:#8ceaff55;background:linear-gradient(135deg,#53eaff15,#984bff20);color:#a4f4ff}
+.reward{border-color:#a78bfa55;background:linear-gradient(100deg,#7755ff1a,#53eaff0b);box-shadow:inset 0 1px #ffffff0a}
+.bottom-nav{background:linear-gradient(180deg,#091326f2,#030711fc);border-top-color:#8cecff24;box-shadow:0 -10px 30px #0004}
+.nav-item.active{color:#9cefff}
+#tutorial{background:radial-gradient(ellipse at center,#15244acc,#02040beF 72%);backdrop-filter:blur(7px)}
+.tutorial-card{background:linear-gradient(145deg,#111f3b,#080d1d);border-color:#8cecff55;box-shadow:0 0 60px #6851ff24,inset 0 1px #ffffff0d}
+#sound-toggle{border-color:#8cecff35;background:#53eaff0b;color:#9cefff}
+#message{ text-shadow:0 0 14px #53eaff40 }
+#sound-toggle{font-size:9px;letter-spacing:1px;padding:7px 9px;border-radius:8px;min-height:32px}
+.daily-streak{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 16px;padding:13px 14px;border:1px solid #8cecff28;border-radius:12px;background:linear-gradient(110deg,#53eaff0d,#9878ff12);text-align:left}
+.daily-streak strong{display:block;color:#e9faff;font-size:13px}
+.daily-streak small{display:block;color:var(--muted);font-size:10px;margin-top:4px;line-height:1.45}
+.streak-count{flex:none;color:#ffe0a0;font-size:20px;font-weight:900;text-shadow:0 0 16px #ffb84a30}
+.streak-count span{display:block;font-size:8px;letter-spacing:1.5px;text-align:center}
+@media(max-width:360px){.brand{font-size:19px;letter-spacing:3px}header{gap:8px}.status{width:100%;justify-content:space-between}.buy#account-open{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){body:before{animation:none}}
+
+
+.mission-list{display:grid;gap:10px;margin-top:14px}.mission-card{border:1px solid #8cecff20;background:#071020b8;border-radius:12px;padding:13px;text-align:left}.mission-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.mission-card strong{font-size:12px;letter-spacing:.5px}.mission-card p{font-size:11px;color:var(--muted);margin:7px 0 10px;line-height:1.5}.mission-reward{font-size:10px;color:var(--cyan);white-space:nowrap}.mission-progress{height:6px;background:#242a42;border-radius:99px;overflow:hidden}.mission-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#6654ff,#4fcaff);transition:width .2s}.mission-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:9px;font-size:10px;color:var(--muted)}.mission-claim{padding:8px 12px;border:1px solid #8cecff55;border-radius:8px;background:#53eaff18;color:#eafcff;font-weight:800;font-size:10px}.mission-claim:disabled{opacity:.45}.record-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.record-grid div{padding:12px 8px;border:1px solid #8cecff20;border-radius:10px;background:#071020a8;display:grid;gap:6px}.record-grid span{font-size:8px;letter-spacing:1px;color:var(--muted)}.record-grid strong{font-size:19px;color:var(--cyan)}
+
+/* LEGACY MONOCHROME REDESIGN — crisp black, white and silver */
+:root{--cyan:#fff;--muted:#a6a6a6;--purple:#fff}
+body,#game{background:#050505!important;color:#f7f7f7!important}
+#cinematic{background:#000!important;color:#fff;overflow:hidden}
+#cinematic:before{background:linear-gradient(180deg,#000 0%,#08080866 35%,#000 100%)!important}
+#cinematic:after{opacity:.12!important;filter:grayscale(1)}
+.intro-nebula{background:radial-gradient(ellipse at 50% 48%,#ffffff12 0%,transparent 35%),radial-gradient(ellipse at 20% 70%,#ffffff0a 0%,transparent 28%)!important;filter:blur(35px);opacity:1}
+.intro-vignette{background:radial-gradient(ellipse at center,transparent 20%,#000 100%)!important}
+.intro-scanlines{opacity:.035!important;background:repeating-linear-gradient(0deg,transparent 0 4px,#fff 5px,transparent 6px)!important}
+.intro-hud,.intro-hud i,.intro-hud #intro-status{color:#ddd!important;text-shadow:none!important}
+.intro-hud b,.hint-pulse{background:#fff!important;box-shadow:0 0 10px #fff!important}
+#story{border:1px solid #ffffff38!important;border-radius:3px!important;background:linear-gradient(145deg,#080808f2,#111111d9)!important;box-shadow:0 25px 100px #000,inset 0 1px #ffffff15!important;backdrop-filter:blur(16px)}
+.story-progress{background:#ffffff20!important;border-radius:0!important}
+#story-progress-fill{background:linear-gradient(90deg,#777,#fff)!important;box-shadow:0 0 12px #fff5!important}
+.kicker{color:#ddd!important;letter-spacing:5px!important}.kicker:before,.kicker:after{background:linear-gradient(90deg,transparent,#fff)!important}
+#story h1{background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 5px 35px #fff1!important;letter-spacing:2.5px!important}
+#story p{color:#c8c8c8!important}
+#tap-hint{color:#fff!important;text-shadow:none!important;letter-spacing:3px!important}
+.intro-footnote{color:#777!important}
+#old-coin{background:radial-gradient(circle at 30% 22%,#fff 0%,#d9d9d9 8%,#777 35%,#222 70%,#050505 100%)!important;color:#050505!important;border:1px solid #fff!important;box-shadow:0 0 0 6px #ffffff0a,0 0 28px #ffffff33,0 0 85px #ffffff12,inset 0 0 25px #fff8!important}
+#old-coin:before{border-color:#fff8!important;box-shadow:inset 0 0 0 4px #0008,inset 0 0 20px #fff4!important}
+#old-coin:after{border-color:#fff5!important;box-shadow:0 0 24px #fff2!important}
+#old-coin.crack1,#old-coin.crack2,#old-coin.crack3{box-shadow:0 0 30px #fff8,0 0 90px #fff4,inset 0 0 28px #fff!important}
+#legacy-orb{border-color:#fff!important;background:radial-gradient(circle at 31% 24%,#fff 0%,#ddd 8%,#888 25%,#333 55%,#050505 100%)!important;box-shadow:0 0 30px #fff8,0 0 90px #fff3,inset 0 0 30px #fff9!important}
+.orbit,.orbit.one,.orbit.two,.moon{border-color:#ffffff40!important;box-shadow:0 0 20px #ffffff0c!important}
+#enter{background:#fff!important;color:#050505!important;border:1px solid #fff!important;border-radius:2px!important;box-shadow:0 0 35px #ffffff18!important;letter-spacing:4px!important;animation:none!important}
+#enter:active{filter:brightness(.8)}
+/* Apply the same high-contrast finish throughout the game and account screens. */
+.panel,.auth-card,.tutorial-card,.modal-card{background:#090909!important;color:#fff!important;border:1px solid #ffffff24!important;border-radius:4px!important;box-shadow:0 18px 55px #000!important}
+button,.legacy-action,.tutorial-card button{background:#f5f5f5!important;color:#050505!important;border:1px solid #fff!important;border-radius:3px!important;box-shadow:none!important}
+button:disabled{opacity:.4}
+.legacy-secondary,.nav-item,.bottom-nav{background:#080808!important;color:#fff!important;border-color:#ffffff24!important}
+.nav-item.active,.feature-icon,.legacy-balance,.record-grid strong,.shop-icon{color:#fff!important;text-shadow:none!important}
+.shop-icon,.record-grid div,.legacy-qty button{background:#101010!important;border-color:#ffffff2b!important;color:#fff!important}
+.legacy-field,input,textarea,select{background:#050505!important;color:#fff!important;border:1px solid #ffffff40!important;border-radius:3px!important}
+.legacy-field::placeholder,input::placeholder{color:#888!important}
+.tag,.reward{background:#151515!important;border-color:#ffffff35!important;color:#fff!important}
+.mission-progress span{background:#fff!important}
+.bottom-nav{backdrop-filter:blur(18px);border-top:1px solid #ffffff30!important}
+.status-dot{background:#fff!important;box-shadow:0 0 8px #fff!important}
+
+/* LEGACY MONOCHROME COSMOS THEME — black, white, chrome */
+:root{--bg:#030303!important;--panel:#0b0b0b!important;--cyan:#f5f5f5!important;--purple:#d8d8d8!important;--gold:#e7e7e7!important;--muted:#a4a4a4!important}
+html,body{background:#020202!important;color:#f7f7f7!important}
+body{background:radial-gradient(ellipse at 50% 0%,#181818 0%,#050505 44%,#000 100%)!important}
+#game{background:radial-gradient(ellipse at 50% 35%,#171717 0%,transparent 64%)!important}
+#cinematic,#cinematic.cosmos{background:radial-gradient(ellipse at 50% 48%,#202020 0%,#090909 43%,#000 100%)!important}
+.intro-nebula{opacity:.9!important;background:radial-gradient(ellipse at 18% 25%,#f2f2f218 0%,transparent 33%),radial-gradient(ellipse at 78% 43%,#bdbdbd22 0%,transparent 32%),radial-gradient(ellipse at 50% 88%,#fff1 0%,transparent 36%)!important;filter:blur(22px) grayscale(1)!important}
+.intro-scanlines{background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px,transparent 5px)!important;opacity:.045!important}
+.intro-hud,.intro-hud i,.intro-hud #intro-status,.kicker,#tap-hint,.intro-footnote{color:#d8d8d8!important}
+.intro-hud b,.hint-pulse{background:#fff!important;box-shadow:0 0 12px #fff!important}
+#story{background:linear-gradient(145deg,#111d,#050505d9)!important;border-color:#ffffff36!important;box-shadow:0 20px 80px #000b,inset 0 1px #ffffff18!important}
+#story-progress-fill{background:linear-gradient(90deg,#888,#fff)!important;box-shadow:0 0 12px #fff8!important}
+.kicker:before,.kicker:after{background:linear-gradient(90deg,transparent,#eee)!important}
+#story h1{background:linear-gradient(100deg,#fff 10%,#bdbdbd 52%,#fff 90%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;text-shadow:0 0 35px #fff1!important}
+#story p{color:#dedede!important}
+#old-coin{border:2px solid #f7f7f7!important;background:radial-gradient(circle at 28% 20%,#fff 0%,#d7d7d7 12%,#777 34%,#292929 67%,#050505 88%)!important;color:#080808!important;box-shadow:0 0 0 6px #fff1,0 0 26px #fff8,0 0 70px #fff2,inset 0 0 24px #fff8,inset -10px -12px 18px #000!important}
+#old-coin:before{border-color:#fff9!important;box-shadow:inset 0 0 0 4px #0005,inset 0 0 20px #fff5!important}
+#old-coin:after{border-color:#fff8!important;box-shadow:0 0 24px #fff2!important}
+#old-coin.crack1,#old-coin.crack2,#old-coin.crack3{box-shadow:0 0 25px #fff,0 0 90px #fff8,inset 0 0 28px #fff!important}
+#legacy-orb{border-color:#fff!important;background:radial-gradient(circle at 30% 22%,#fff 0%,#eee 8%,#aaa 22%,#555 47%,#171717 75%,#000 100%)!important;box-shadow:0 0 30px #fff9,0 0 90px #fff3,inset 0 0 30px #fff9!important;color:#050505!important}
+.orbit,.orbit.one,.orbit.two{border-color:#ffffff70!important;box-shadow:0 0 20px #ffffff12!important}
+.moon{background:radial-gradient(circle at 30% 25%,#fff,#aaa 30%,#333 75%)!important;border-color:#fff9!important;box-shadow:0 0 20px #fff5!important}
+#enter,.tutorial-card button{background:linear-gradient(110deg,#f5f5f5,#a7a7a7 52%,#fff)!important;color:#050505!important;border:1px solid #fff!important;box-shadow:0 0 30px #fff2,inset 0 1px #fff!important}
+header,.panel,.energy-card,.auth-card,.shop-icon,.tutorial-card,.modal,.card{background:linear-gradient(145deg,#151515,#050505)!important;border-color:#ffffff2b!important;color:#f5f5f5!important}
+.panel:before{background:linear-gradient(90deg,transparent,#fff9,transparent)!important}
+button,.buy,.nav-item,.feature-icon{--cyan:#fff;color:#fff}
+button{border-color:#ffffff45!important}
+.buy{background:linear-gradient(135deg,#ffffff12,#ffffff08)!important;border-color:#ffffff66!important;color:#fff!important;box-shadow:inset 0 0 16px #fff08!important}
+.buy:hover{background:#ffffff20!important;box-shadow:0 0 20px #fff2!important}
+.bar{background:#292929!important}#energy-fill{background:linear-gradient(90deg,#777,#fff)!important}
+.bottom-nav{background:#050505f5!important;border-top-color:#ffffff2a!important}
+.nav-item{color:#888!important}.nav-item.active{color:#fff!important}.nav-item.active span{text-shadow:0 0 15px #fff8!important}
+.feature-icon{color:#fff!important;text-shadow:0 0 22px #fff6!important}
+.shop-icon{background:linear-gradient(145deg,#ffffff18,#ffffff08)!important;color:#fff!important;border-color:#ffffff3d!important;box-shadow:inset 0 0 18px #fff08,0 0 20px #fff08!important}
+input,textarea,select{background:#090909!important;color:#fff!important;border-color:#ffffff40!important}
+input::placeholder,textarea::placeholder{color:#888!important}
+.auth-card button,.primary,.cta{background:linear-gradient(110deg,#fff,#bdbdbd)!important;color:#050505!important}
+/* Keep every accent strictly grayscale, including any legacy inline styling. */
+
+
+/* FINAL SPACE MONOCHROME PASS: preserve game logic, restyle the whole interface. */
+:root{color-scheme:dark;--bg:#030303;--panel:#0a0a0a;--cyan:#f5f5f5;--purple:#a8a8a8;--muted:#a8a8a8;--line:#ffffff2a}
+html,body{background:#020202!important;color:#f7f7f7}
+body{background:radial-gradient(ellipse at 50% 40%,#171717 0%,#070707 44%,#000 100%)!important}
+button:focus-visible{outline-color:#fff!important}
+#game{background:radial-gradient(ellipse at 50% 38%,#171717 0%,#090909 42%,#000 75%)!important}
+.brand span,.currency,.level-pill,.tap-caption,.energy-head strong,#message,.tag,.feature-icon,.nav-item.active,.nav-item.active span,.intro-hud i,#solar-title,#tap-hint,.hint-pulse{color:#f5f5f5!important}
+.status{color:#e8e8e8!important}.status-dot{background:#fff!important;box-shadow:0 0 9px #fff8!important}
+#sound-toggle,.buy,.reward,.tutorial-card,.panel,.energy-card,.level-pill,.legacy-action,.auth-card,.buy-card,.shop-icon{border-color:#ffffff42!important;background:linear-gradient(145deg,#171717,#070707)!important;color:#f5f5f5!important;box-shadow:0 10px 28px #0009,inset 0 1px #ffffff12!important}
+.buy:not(:disabled):hover,.nav-item.active{color:#fff!important;border-color:#fff!important}
+.bar{background:#242424!important;border:1px solid #666!important}#energy-fill{background:linear-gradient(90deg,#777,#fff)!important}
+.orb-glow{background:conic-gradient(from 0deg,#ffffff05,#ffffff32,#77777722,#fff3)!important;filter:blur(30px)!important}
+#game-orb{width:clamp(165px,45vw,210px)!important;height:clamp(165px,45vw,210px)!important;border:2px solid #e9e9e9!important;background:radial-gradient(circle at 30% 20%,#fff 0%,#d9d9d9 7%,#888 20%,#3c3c3c 42%,#141414 67%,#030303 100%)!important;color:#050505!important;text-shadow:none!important;box-shadow:0 0 0 7px #fff1,0 0 28px #fff6,0 0 80px #fff2,inset 0 0 24px #fff8!important}
+#game-orb:before{border-color:#fff8!important;box-shadow:inset 0 0 20px #fff5!important}#game-orb:after{border-color:#fff5!important;inset:-15px!important;box-shadow:0 0 24px #fff1!important}
+#game-orb .legacy-mark{width:55%;height:55%;filter:drop-shadow(0 2px 2px #fff8)}#game-orb:active{filter:brightness(1.25)!important;box-shadow:0 0 45px #fff9,0 0 100px #fff4,inset 0 0 25px #fff!important}
+.tap-ring{border-color:#fff!important;box-shadow:0 0 18px #fff6!important}
+.bottom-nav{background:#050505f5!important;border-color:#fff3!important}.nav-item{color:#888!important}.nav-item.active{color:#fff!important}.nav-item.active span{text-shadow:0 0 15px #fff8!important}
+#cinematic,#cinematic.cosmos{background:radial-gradient(ellipse at 50% 45%,#222 0%,#090909 45%,#000 100%)!important}
+.intro-nebula{opacity:.65!important;background:radial-gradient(ellipse at 20% 35%,#fff2 0%,transparent 32%),radial-gradient(ellipse at 78% 42%,#aaa2 0%,transparent 32%),radial-gradient(ellipse at 50% 78%,#ddd1 0%,transparent 38%)!important;filter:blur(34px)!important}
+.intro-scanlines{background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px,transparent 5px)!important;opacity:.035!important}
+#story{border-color:#ffffff2b!important;background:linear-gradient(145deg,#111d,#050505b8)!important;box-shadow:0 20px 80px #000b,inset 0 1px #fff1!important}
+#story-progress-fill{background:linear-gradient(90deg,#777,#fff)!important;box-shadow:0 0 12px #fff8!important}
+#story h1{background:linear-gradient(100deg,#fff 20%,#bbb 52%,#fff 80%)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.kicker:before,.kicker:after{background:linear-gradient(90deg,transparent,#fff)!important}
+#old-coin{border-color:#fff!important;background:radial-gradient(circle at 28% 19%,#fff 0%,#ddd 8%,#999 24%,#444 49%,#171717 74%,#020202 100%)!important;color:#050505!important;box-shadow:0 0 0 1px #fff6,0 0 0 7px #fff1,0 0 35px #fff6,0 0 100px #fff2,inset 0 0 0 5px #222,inset 0 0 0 7px #fff4,inset 0 0 32px #fff5!important}
+#old-coin:before{border-color:#fff9!important;box-shadow:inset 0 0 0 4px #222,inset 0 0 20px #fff5!important}#old-coin:after{border-color:#fff5!important;box-shadow:0 0 45px #fff2!important}
+#legacy-orb{border-color:#fff!important;background:radial-gradient(circle at 31% 24%,#fff 0%,#ddd 8%,#888 25%,#333 55%,#050505 100%)!important;box-shadow:0 0 30px #fff8,0 0 90px #fff3,inset 0 0 30px #fff9!important;color:#050505!important}
+#enter,.tutorial-card button{background:linear-gradient(100deg,#f5f5f5,#aaa)!important;color:#050505!important;border:1px solid #fff!important}
+#account-gate,#account-modal,#legacy-buy-modal{background:#000e!important;backdrop-filter:blur(16px)}
+input,select,textarea{background:#080808!important;color:#fff!important;border-color:#666!important}
+@media(prefers-reduced-motion:reduce){.intro-nebula,#game-orb,#old-coin:after{animation:none!important}}
+
+</style>
+</head>
+<body>
+<section id="cinematic">
+  <div class="intro-nebula"></div>
+  <div class="intro-vignette"></div>
+  <div class="intro-scanlines"></div>
+  <div class="intro-hud"><span>LEGACY <i>//</i> ORIGIN PROTOCOL</span><span id="intro-status"><b></b> SIGNAL SEARCHING</span></div>
+  <div class="stars"></div>
+  <div id="solar-title">YOUR LEGACY STARTS HERE</div>
+  <button id="old-coin" aria-label="Tap to reveal the story">N</button>
+  <div id="story">
+    <div class="story-progress" aria-label="Story progress"><span id="story-progress-fill"></span></div>
+    <div class="kicker" id="chapter">TRANSMISSION 01</div>
+    <h1 id="story-title">FROM NOTHING.</h1>
+    <p id="story-text">In the beginning, there was nothing.</p>
+    <div id="tap-hint"><span class="hint-pulse"></span> TAP THE COIN TO CONTINUE</div>
+    <div class="intro-footnote">A COMMUNITY-POWERED JOURNEY</div>
+  </div>
+  <button id="enter">ENTER LEGACY →</button>
+</section>
+
+<main id="game" class="hidden">
+  <header class="topbar">
+    <div class="brand">LEG<span>A</span>CY</div><button class="buy" id="account-open" type="button">ACCOUNT</button>
+    <div class="status"><span class="status-dot"></span>SYSTEM ONLINE <button id="sound-toggle" aria-pressed="false" title="Toggle sound effects">SOUND OFF</button></div>
+  </header>
+
+  <section id="tab-home" class="game-tab">
+    <div class="label">STELLAR RESERVES</div>
+    <div class="balance-row"><span class="balance-symbol">◆</span><div id="balance">0</div></div>
+    <div class="currency">COSMIC ENERGY · LGC</div>
+    <div class="level-pill">RANK <span id="level-home">1</span> · EXPLORER</div>
+    <div class="game-orb-zone" id="game-orb-zone">
+      <div class="orb-glow"></div>
+      <button id="game-orb" aria-label="Tap the Legacy orb"><svg class="legacy-mark" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 13 88 80H12Z" fill="none" stroke="currentColor" stroke-width="9" stroke-linejoin="round"/><path d="M50 13V80" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><path d="M28 80H72" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"/></svg></button>
+    </div>
+    <p class="tap-caption">TAP TO HARVEST COSMIC ENERGY</p>
+    <section class="energy-card">
+      <div class="energy-head"><span>✦ REACTOR OUTPUT</span><strong><span id="energy">100</span> / 100</strong></div>
+      <div class="bar"><div id="energy-fill"></div></div>
+      <p class="energy-note">Reactor recharges automatically</p>
+    </section>
+  </section>
+
+  <section id="tab-boosts" class="game-tab hidden">
+    <div class="section-heading">CORE SYSTEMS</div>
+    <p class="section-subtitle">Upgrade your reactor. Expand your power.</p>
+    <section class="panel">
+      <div class="upgrade-row">
+        <div class="shop-icon">✦</div>
+        <div class="upgrade-info">
+          <strong>Multitap</strong><p>Earn more LGC with every tap.</p>
+          <p>Current level: <b id="shop-level">1</b></p>
+          <p>Cost: <b id="cost">50</b> LGC</p>
+        </div>
+        <button class="buy" id="upgrade">UPGRADE</button>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="upgrade-row">
+        <div class="shop-icon">⚡</div>
+        <div class="upgrade-info">
+          <strong>Reactor Overcharge</strong><p>Instantly restore your reactor to full capacity.</p>
+          <p>Cost: <b>1,000 LGC</b> (in-game)</p>
+        </div>
+        <button class="buy" id="refill">QUICK REFILL · 1,000 LGC</button><button class="buy" id="paid-refill" type="button">BUY REFILLS</button>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="upgrade-row">
+        <div class="shop-icon">♻</div>
+        <div class="upgrade-info">
+          <strong>Reactor Recharge</strong><p>Reactor output restores by 1 every 3 seconds.</p>
+          <p class="tag">STANDARD CORE</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section id="tab-friends" class="game-tab hidden">
+    <div class="section-heading">BUILD YOUR CIRCLE</div>
+    <p class="section-subtitle">Every star is part of something bigger.</p>
+    <section class="panel feature-panel referral-panel">
+      <div class="feature-icon">✦</div><h3>RECRUIT YOUR CREW</h3>
+      <p>Invite friends with your personal link. Your username identifies who invited them.</p>
+      <div class="ref-label">YOUR USERNAME</div>
+      <div class="ref-code-row"><strong id="ref-code">@Explorer</strong><button class="buy" id="copy-ref-code" type="button">COPY</button></div>
+      <div class="ref-label">YOUR INVITE LINK</div>
+      <button class="reward" id="share-ref-link" type="button">SHARE INVITE LINK ↗</button>
+      <div class="ref-divider"></div>
+      <div class="panel-title"><strong>YOUR CREW</strong><span class="tag"><span id="referral-count">0</span> INVITED</span></div>
+      <p class="ref-note" id="referral-list-note" role="status">Sign in to see people who joined through your link.</p>
+      <ul id="referral-list" class="referral-list" aria-live="polite"></ul>
+      <div class="ref-divider"></div>
+      <label class="ref-label" for="ref-input">INVITED BY A USERNAME?</label>
+      <div class="ref-input-row"><input id="ref-input" type="text" maxlength="24" placeholder="ENTER USERNAME" autocomplete="off"/><button class="buy" id="apply-ref" type="button">CLAIM +100</button></div>
+      <p class="ref-note" id="ref-note" role="status">Referral attribution and crew lists require the Supabase referral function to be deployed.</p>
+    </section>
+  </section>
+
+  <section id="tab-earn" class="game-tab hidden">
+    <div class="section-heading">MISSION CONTROL</div>
+    <p class="section-subtitle">Build your streak. Clear each stage to unlock tougher objectives.</p>
+    <section class="daily-streak" aria-live="polite">
+      <div><strong>✦ EXPLORER STREAK</strong><small id="streak-copy">Claim your daily supply to build a streak.</small></div>
+      <div class="streak-count"><span id="streak-count">0</span><span>DAYS</span></div>
+    </section>
+    <section class="panel">
+      <div class="panel-title"><strong>DAILY STARDUST</strong><span class="tag">+100 LGC</span></div>
+      <p class="section-subtitle">Collect your daily cosmic energy once per cycle.</p>
+      <button class="reward" id="daily">CLAIM DAILY REWARD</button>
+    </section>
+    <section class="panel mission-panel">
+      <div class="panel-title"><strong>DEEP-SPACE MISSIONS</strong><span class="tag" id="mission-reset">DAILY</span></div>
+      <p class="section-subtitle">Progress through chained objectives. Later stages demand more taps, earnings and upgrades; progress refreshes daily.</p>
+      <div id="mission-list" class="mission-list" aria-live="polite"></div>
+      <p class="section-subtitle" id="mission-note">Prototype mode: balances, missions, streaks and referral claims are stored on this device and can be edited. Do not treat LGC as real or transferable value until server validation is deployed.</p>
+    </section>
+    <section class="panel mission-panel">
+      <div class="panel-title"><strong>EXPLORER RECORD</strong><span class="tag">ACHIEVEMENTS</span></div>
+      <div class="record-grid">
+        <div><span>TOTAL TAPS</span><strong id="record-taps">0</strong></div>
+        <div><span>UPGRADES</span><strong id="record-upgrades">0</strong></div>
+        <div><span>MISSIONS CLAIMED</span><strong id="record-claims">0</strong></div>
+      </div>
+    </section>
+  </section>
+
+  <p id="message" role="status">Your expedition begins now.</p>
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="home"><span>⌂</span><small>Home</small></button>
+    <button class="nav-item" data-tab="boosts"><span>⚡</span><small>Boosts</small></button>
+    <button class="nav-item" data-tab="friends"><span>♧</span><small>Friends</small></button>
+    <button class="nav-item" data-tab="earn"><span>◇</span><small>Earn</small></button>
+  </nav>
+</main>
+
+<div id="tutorial" class="hidden">
+  <section class="tutorial-card">
+    <div class="kicker" id="tutorial-step">INITIATION · 01</div>
+    <h2 id="tutorial-title">WELCOME, EXPLORER.</h2>
+    <p id="tutorial-text">The core is yours to awaken.</p>
+    <button id="tutorial-next">BEGIN →</button>
+  </section>
+</div>
+
+<script>
+"use strict";
+
+// Web-only build: no Telegram SDK or Telegram identity dependency.
+const SAVE_KEY = "legacy-clicker-v1";
+const defaults = {coins:0,energy:100,power:1,cost:50,lastReward:""};
+let state = {...defaults};
+
+try {
+  const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+  if (saved && typeof saved === "object") {
+    state.coins = Math.max(0, Number(saved.coins) || 0);
+    state.energy = Math.min(100, Math.max(0, Number(saved.energy) || 0));
+    state.power = Math.max(1, Number(saved.power) || 1);
+    state.cost = Math.max(50, Number(saved.cost) || 50);
+    state.lastReward = typeof saved.lastReward === "string" ? saved.lastReward : "";
+  }
+} catch(e) { console.warn("Save could not be loaded", e); }
+
+const $ = id => document.getElementById(id);
+const storySlides = [
+  {title:"FROM NOTHING.",text:"In the beginning, there was nothing. No empire. No millions. No legacy. Just a simple idea... and people willing to believe in it."},
+  {title:"THEN CAME THE MOVEMENT.",text:"One tap became thousands. Thousands became millions. Notcoin showed us how a simple game could bring people together."},
+  {title:"LEGACIES LIVE ON.",text:"The world keeps moving. New coins rise. New movements begin. But the spirit of a community doesn't have to disappear."},
+  {title:"WE BUILD WHAT COMES NEXT.",text:"We're builders, creators and believers. We're here to create something of our own, with a community growing together."},
+  {title:"THE LEGACY IS YOURS.",text:"The old coin breaks. A new core awakens. This is our next chapter. This is LEGACY. And it starts with you."}
+];
+
+let storyIndex = 0;
+let introBusy = false;
+const intro = $("cinematic");
+const oldCoin = $("old-coin");
+const story = $("story");
+
+function showStory(index) {
+  const slide = storySlides[index];
+  $("chapter").textContent = "TRANSMISSION " + String(index + 1).padStart(2, "0");
+  $("story-title").textContent = slide.title;
+  $("story-text").textContent = slide.text;
+  $("story-progress-fill").style.width = (((index + 1) / storySlides.length) * 100) + "%";
+  $("intro-status").innerHTML = "<b></b> TRANSMISSION " + String(index + 1).padStart(2, "0") + " / 05";
+  story.classList.remove("visible");
+  void story.offsetWidth;
+  story.classList.add("visible");
+}
+
+function beginStory() {
+  if (introBusy || oldCoin.classList.contains("arrived")) return;
+  introBusy = true;
+  oldCoin.classList.add("arrived");
+  setTimeout(() => {
+    story.classList.add("visible");
+    $("story-title").textContent = "A SIGNAL FROM THE PAST.";
+    $("story-text").textContent = "Something once began from nothing. Tap the coin to discover what came next.";
+    $("chapter").textContent = "INCOMING TRANSMISSION";
+    $("story-progress-fill").style.width = "0%";
+    $("intro-status").innerHTML = "<b></b> SIGNAL LOCKED";
+    $("tap-hint").innerHTML = '<span class="hint-pulse"></span> TAP THE COIN'; 
+    introBusy = false;
+  }, 1100);
+}
+
+function revealNext() {
+  if (introBusy) return;
+  introBusy = true;
+
+  if (storyIndex < storySlides.length) {
+    showStory(storyIndex);
+    oldCoin.classList.remove("crack1", "crack2", "crack3");
+    if (storyIndex >= 1) oldCoin.classList.add("crack1");
+    if (storyIndex >= 2) oldCoin.classList.add("crack2");
+    if (storyIndex >= 3) oldCoin.classList.add("crack3");
+
+    $("tap-hint").textContent = storyIndex === storySlides.length - 1
+      ? "TAP TO BREAK THE CYCLE"
+      : "TAP THE COIN TO CONTINUE";
+    storyIndex++;
+    introBusy = false;
+    return;
+  }
+
+  // The coin remains intact through the story. Only this final tap makes it disappear.
+  oldCoin.classList.add("shatter");
+  story.classList.remove("visible");
+  $("intro-status").innerHTML = "<b></b> CORE REAWAKENING";
+
+  // Let the old coin fully fade out before the new solar system begins to appear.
+  setTimeout(() => {
+    oldCoin.style.display = "none";
+    intro.classList.add("cosmos");
+    $("solar-title").textContent = "YOUR LEGACY STARTS HERE";
+    $("intro-status").innerHTML = "<b></b> ORIGIN COMPLETE";
+    setTimeout(() => {
+      intro.classList.add("ready");
+      introBusy = false;
+    }, 1500);
+  }, 520);
+}
+
+oldCoin.addEventListener("click", () => {
+  if (!oldCoin.classList.contains("arrived")) {
+    beginStory();
+    return;
+  }
+  if (introBusy) return;
+
+  if ($("chapter").textContent === "INCOMING TRANSMISSION") {
+    storyIndex = 0;
+    showStory(storyIndex);
+    oldCoin.classList.add("crack1");
+    $("tap-hint").textContent = "TAP THE COIN TO CONTINUE";
+    storyIndex = 1;
+    return;
+  }
+  revealNext();
+});
+
+function enterGame() {
+  if (intro.classList.contains("leaving")) return;
+  intro.classList.add("leaving");
+  intro.style.opacity = "0";
+  intro.style.transform = "scale(1.8)";
+  setTimeout(() => {
+    intro.classList.add("hidden");
+    $("game").classList.remove("hidden");
+    if (localStorage.getItem("legacyTutorialSeen") !== "true") startTutorial();
+  }, 950);
+  try { localStorage.setItem("legacyIntroSeen", "true"); } catch(e) {}
+}
+$("enter").addEventListener("click", enterGame);
+
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+const FREE_REFILL_LIMIT = 5;
+function freeRefillStorageKey() {
+  const account = window.legacyAccountId || localStorage.getItem("legacy-username") || "guest";
+  return "legacy-free-refills-v1:" + account;
+}
+function getFreeRefillCount() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(freeRefillStorageKey()) || "null");
+    return saved && saved.day === todayKey() ? Math.min(FREE_REFILL_LIMIT, Math.max(0, Number(saved.count) || 0)) : 0;
+  } catch (e) { return 0; }
+}
+function recordFreeRefill() {
+  const count = getFreeRefillCount();
+  if (count >= FREE_REFILL_LIMIT) return false;
+  try { localStorage.setItem(freeRefillStorageKey(), JSON.stringify({day:todayKey(),count:count+1})); } catch (e) {}
+  return true;
+}
+function dayNumber(key) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(key || "")) return NaN;
+  const [y,m,d] = key.split("-").map(Number);
+  return Math.floor(Date.UTC(y,m-1,d) / 86400000);
+}
+const STREAK_KEY = "legacy-daily-streak-v1";
+function readStreak() {
+  try { const v = JSON.parse(localStorage.getItem(STREAK_KEY) || "null"); if(v && Number.isFinite(v.count) && typeof v.last === "string") return {count:Math.max(0,v.count),last:v.last}; } catch(e) {}
+  return {count:0,last:""};
+}
+let streak = readStreak();
+function renderStreak() {
+  const gap = dayNumber(todayKey()) - dayNumber(streak.last);
+  const count = gap === 0 || gap === 1 ? streak.count : 0;
+  $("streak-count").textContent = count;
+  $("streak-copy").textContent = gap === 0 ? "Daily supply claimed today. Come back tomorrow." : count > 0 ? "Keep the signal alive—claim today's supply." : "Claim your daily supply to start a streak.";
+}
+function claimStreakDay() {
+  const today = todayKey(), gap = dayNumber(today) - dayNumber(streak.last);
+  if (gap === 0) return;
+  streak = {last:today,count:gap === 1 ? streak.count + 1 : 1};
+  try { localStorage.setItem(STREAK_KEY, JSON.stringify(streak)); } catch(e) {}
+  renderStreak();
+}
+function save() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
+  catch(e) { console.warn("Could not save", e); }
+}
+function update() {
+  $("balance").textContent = Math.floor(state.coins).toLocaleString();
+  $("energy").textContent = state.energy;
+  $("energy-fill").style.width = (state.energy / 100 * 100) + "%";
+  $("level-home").textContent = state.power;
+  $("shop-level").textContent = state.power;
+  $("cost").textContent = state.cost.toLocaleString();
+  $("upgrade").disabled = state.coins < state.cost;
+  const refillCount = getFreeRefillCount();
+  $("refill").disabled = state.coins < 75 || state.energy >= 100 || refillCount >= 5;
+  $("refill").textContent = refillCount >= 5 ? "DAILY REFILLS USED (5/5)" : `FREE REFILL (${refillCount}/5)`;
+  $("daily").disabled = state.lastReward === todayKey();
+  $("daily").textContent = $("daily").disabled ? "DAILY REWARD COLLECTED" : "CLAIM DAILY REWARD";
+  renderStreak();
+}
+// Read/write bridge used by account sync; the database remains untrusted for economy values.
+window.state = state;
+window.update = update;
+window.legacySaveLocal = save;
+function message(text) { $("message").textContent = text; }
+
+// Progressive daily mission chains: local prototype only. Production rewards must be validated server-side.
+const MISSION_KEY = "legacy-missions-v2";
+const missionDefs = [
+  {id:"tap-100",chain:"taps",stage:1,title:"CORE CALIBRATION I",desc:"Tap the Legacy orb 100 times today.",goal:100,reward:60,stat:"taps"},
+  {id:"tap-350",chain:"taps",stage:2,title:"CORE CALIBRATION II",desc:"Push your total to 350 taps today.",goal:350,reward:140,stat:"taps",requires:"tap-100"},
+  {id:"tap-800",chain:"taps",stage:3,title:"CORE CALIBRATION III",desc:"Reach 800 taps in one day.",goal:800,reward:300,stat:"taps",requires:"tap-350"},
+  {id:"earn-500",chain:"stardust",stage:1,title:"STARDUST COLLECTOR I",desc:"Earn 500 LGC from tapping today.",goal:500,reward:100,stat:"earned"},
+  {id:"earn-1800",chain:"stardust",stage:2,title:"STARDUST COLLECTOR II",desc:"Earn 1,800 LGC from tapping today.",goal:1800,reward:250,stat:"earned",requires:"earn-500"},
+  {id:"earn-4500",chain:"stardust",stage:3,title:"STARDUST COLLECTOR III",desc:"Earn 4,500 LGC from tapping today.",goal:4500,reward:500,stat:"earned",requires:"earn-1800"},
+  {id:"upgrade-2",chain:"systems",stage:1,title:"SYSTEMS ONLINE",desc:"Purchase 2 upgrades today.",goal:2,reward:150,stat:"upgrades"},
+  {id:"upgrade-5",chain:"systems",stage:2,title:"SYSTEMS OVERDRIVE",desc:"Purchase 5 upgrades today.",goal:5,reward:350,stat:"upgrades",requires:"upgrade-2"},
+  {id:"daily-claim",title:"DAILY SIGNAL",desc:"Claim today's daily reward.",goal:1,reward:50,stat:"daily"},
+  {id:"refill-1",title:"REACTOR RESUPPLY",desc:"Complete a refill purchase (optional).",goal:1,reward:100,stat:"refills"}
+];
+function blankMissionData(){return {day:todayKey(),stats:{taps:0,earned:0,upgrades:0,daily:0,refills:0},claimed:[]};}
+function readMissionData(){
+  try{const d=JSON.parse(localStorage.getItem(MISSION_KEY)||"null");if(d&&d.day===todayKey()&&d.stats&&Array.isArray(d.claimed))return d;}catch(e){}
+  return blankMissionData();
+}
+let missionData=readMissionData();
+function persistMissionData(){try{localStorage.setItem(MISSION_KEY,JSON.stringify(missionData));}catch(e){} }
+function renderMissions(){
+  const host=$("mission-list");if(!host)return;
+  host.innerHTML="";
+  missionDefs.forEach(def=>{
+    const progress=Math.min(def.goal,Math.max(0,Number(missionData.stats[def.stat])||0));
+    const done=progress>=def.goal,claimed=missionData.claimed.includes(def.id);
+    const locked=!!def.requires&&!missionData.claimed.includes(def.requires);
+    const card=document.createElement("div");card.className="mission-card";
+    if(locked)card.style.opacity=".62";
+    const top=document.createElement("div");top.className="mission-top";
+    const title=document.createElement("strong");title.textContent=(locked?"🔒 ":"")+def.title;
+    const reward=document.createElement("span");reward.className="mission-reward";reward.textContent="+"+def.reward+" LGC";
+    top.append(title,reward);
+    const desc=document.createElement("p");desc.textContent=locked?"Unlock by claiming the previous stage in this chain.":def.desc;
+    const bar=document.createElement("div");bar.className="mission-progress";
+    const fill=document.createElement("span");fill.style.width=(progress/def.goal*100)+"%";bar.append(fill);
+    const bottom=document.createElement("div");bottom.className="mission-bottom";
+    const count=document.createElement("span");count.textContent=progress.toLocaleString()+" / "+def.goal.toLocaleString();
+    const btn=document.createElement("button");btn.className="mission-claim";btn.type="button";
+    btn.textContent=claimed?"CLAIMED":locked?"LOCKED":done?"CLAIM REWARD":"IN PROGRESS";btn.disabled=!done||claimed||locked;
+    btn.addEventListener("click",()=>{
+      if(!done||locked||missionData.claimed.includes(def.id))return;
+      missionData.claimed.push(def.id);state.coins+=def.reward;persistMissionData();update();save();renderMissions();
+      $("record-claims").textContent=missionData.claimed.length;message("Mission complete: +"+def.reward+" LGC!");playTone("reward");
+    });
+    bottom.append(count,btn);card.append(top,desc,bar,bottom);host.append(card);
+  });
+  $("record-taps").textContent=Number(missionData.stats.taps||0).toLocaleString();
+  $("record-upgrades").textContent=Number(missionData.stats.upgrades||0).toLocaleString();
+  $("record-claims").textContent=missionData.claimed.length;
+}
+function recordMission(stat,amount=1){
+  if(missionData.day!==todayKey())missionData=blankMissionData();
+  missionData.stats[stat]=(Number(missionData.stats[stat])||0)+amount;
+  persistMissionData();renderMissions();
+}
+window.legacyRecordRefill=()=>recordMission("refills",1);
+
+// Tiny synthesized sound effects: no external audio files or downloads needed.
+let soundEnabled = false;
+try { soundEnabled = localStorage.getItem("legacy-sound-enabled") === "true"; } catch(e) {}
+let audioContext = null;
+function haptic(pattern = 8) {
+  try { if (navigator.vibrate) navigator.vibrate(pattern); } catch(e) { /* Haptics are optional and unsupported on some browsers. */ }
+}
+function playTone(kind = "tap") {
+  if (!soundEnabled) return;
+  try {
+    audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === "suspended") audioContext.resume();
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const settings = kind === "upgrade" ? [520, 880, .18] : kind === "reward" ? [660, 990, .22] : kind === "refill" ? [330, 660, .18] : [440, 620, .075];
+    osc.type = kind === "tap" ? "sine" : "triangle";
+    osc.frequency.setValueAtTime(settings[0], now);
+    osc.frequency.exponentialRampToValueAtTime(settings[1], now + settings[2]);
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(kind === "tap" ? .045 : .07, now + .012);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + settings[2] + .08);
+    osc.connect(gain); gain.connect(audioContext.destination);
+    osc.start(now); osc.stop(now + settings[2] + .09);
+  } catch (e) { /* Sound is optional; game remains playable if audio is blocked. */ }
+}
+function renderSoundToggle() {
+  $("sound-toggle").textContent = soundEnabled ? "SOUND ON" : "SOUND OFF";
+  $("sound-toggle").setAttribute("aria-pressed", String(soundEnabled));
+}
+renderSoundToggle();
+$("sound-toggle").addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  try { localStorage.setItem("legacy-sound-enabled", String(soundEnabled)); } catch(e) {}
+  renderSoundToggle();
+  if (soundEnabled) playTone("reward");
+});
+function orbPulse() {
+  const zone = $("game-orb-zone");
+  const ring = document.createElement("span");
+  ring.className = "tap-ring";
+  ring.style.left = "50%"; ring.style.top = "50%";
+  zone.appendChild(ring);
+  ring.addEventListener("animationend", () => ring.remove());
+}
+
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => {
+    const target = button.dataset.tab;
+    document.querySelectorAll(".game-tab").forEach(tab => tab.classList.add("hidden"));
+    $("tab-" + target).classList.remove("hidden");
+    document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item === button));
+  });
+});
+
+$("game-orb").addEventListener("click", () => {
+  if (state.energy < 1) {
+    message("Energy depleted. Wait for the core to recharge.");
+    return;
+  }
+  state.coins += state.power;
+  recordMission("taps",1);recordMission("earned",state.power);
+  state.energy--;
+  haptic(8);
+  playTone("tap");
+  orbPulse();
+  const zone = $("game-orb-zone");
+  const rect = $("game-orb").getBoundingClientRect();
+  const zr = zone.getBoundingClientRect();
+  const f = document.createElement("span");
+  f.className = "float";
+  f.textContent = "+" + state.power;
+  f.style.left = (rect.left - zr.left + rect.width/2) + "px";
+  f.style.top = (rect.top - zr.top + rect.height/3) + "px";
+  zone.appendChild(f);
+  f.addEventListener("animationend", () => f.remove());
+  update(); save();
+});
+
+$("upgrade").addEventListener("click", () => {
+  if (state.coins < state.cost) return message("Not enough LGC points.");
+  state.coins -= state.cost;
+  state.power++;
+  recordMission("upgrades",1);
+  state.cost = Math.ceil(state.cost * 1.7);
+  message("Core enhanced. Tap power increased!");
+  playTone("upgrade");
+  update(); save();
+});
+
+$("refill").addEventListener("click", () => {
+  const price = 1000;
+  if (getFreeRefillCount() >= FREE_REFILL_LIMIT) return message("Daily free refill limit reached (5/5). Come back tomorrow or use BUY REFILLS.");
+  if (state.energy >= 100) return message("Your energy core is already full.");
+  if (state.coins < price) return message("You need " + price + " LGC for a quick refill.");
+  if (!recordFreeRefill()) return message("Daily free refill limit reached (5/5). Come back tomorrow or use BUY REFILLS.");
+  state.coins -= price;
+  state.energy = 100;
+  message("Energy restored. Back to building!");
+  playTone("refill");
+  update(); save();
+});
+
+$("daily").addEventListener("click", () => {
+  if (state.lastReward === todayKey()) return message("Daily reward already claimed.");
+  state.coins += 100;
+  state.lastReward = todayKey();
+  claimStreakDay();
+  haptic([18,35,18]);
+  recordMission("daily",1);
+  message("Daily supply received: +100 LGC!");
+  playTone("reward");
+  update(); save();
+});
+
+// Username-based referral links. Actual attribution/listing is server-backed when configured.
+const REF_CLAIM_KEY = "legacy-referral-claimed-v2";
+function referralUsername() {
+  const fromAccount = window.legacyUsername || "";
+  if (fromAccount) return String(fromAccount).replace(/^@/, "").trim();
+  try { return localStorage.getItem("legacy-username") || "Explorer"; } catch (e) { return "Explorer"; }
+}
+function cleanUsername(value) { return String(value || "").trim().replace(/^@/, "").replace(/[^a-zA-Z0-9_]/g, "").slice(0,20); }
+const myReferralCode = referralUsername();
+$("ref-code").textContent = "@" + myReferralCode;
+const incomingRef = new URLSearchParams(window.location.search).get("ref");
+if (incomingRef && $("ref-input")) $("ref-input").value = cleanUsername(incomingRef);
+function inviteUrl() {
+  const url = new URL(window.location.href); url.search = ""; url.hash = "";
+  url.searchParams.set("ref", myReferralCode); return url.toString();
+}
+async function copyText(value) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(value);
+    else { const temp=document.createElement("textarea");temp.value=value;temp.style.position="absolute";temp.style.opacity="0";document.body.appendChild(temp);temp.select();const ok=document.execCommand("copy");temp.remove();if(!ok)throw new Error("Copy unavailable"); }
+    return true;
+  } catch (e) { return false; }
+}
+$("copy-ref-code").addEventListener("click", async () => {
+  const username = cleanUsername(referralUsername()); const ok = await copyText(username);
+  message(ok ? "Username copied." : "Copy failed. Select your username and copy it manually.");
+});
+$("share-ref-link").addEventListener("click", async () => {
+  const url=inviteUrl(); const shareData={title:"Join LEGACY",text:"Join me in LEGACY! Use my invite link:",url};
+  try { if(navigator.share) await navigator.share(shareData); else if(await copyText(url)) message("Invite link copied. Send it to your friends."); else message(url); }
+  catch(e) { if(e&&e.name!=="AbortError") message("Invite link: "+url); }
+});
+$("apply-ref").addEventListener("click", async () => {
+  const username=cleanUsername($("ref-input").value);
+  if(!username){$("ref-note").textContent="Enter the inviter's username first.";return;}
+  if(username.toLowerCase()===cleanUsername(referralUsername()).toLowerCase()){$("ref-note").textContent="You cannot use your own username.";return;}
+  if(!window.legacyClaimReferral){$("ref-note").textContent="Sign in and configure the referral backend to validate this username and record the invite securely.";return;}
+  $("apply-ref").disabled=true; $("ref-note").textContent="Checking referral…";
+  try { const result=await window.legacyClaimReferral(username); $("ref-note").textContent=result.message||"Referral recorded."; }
+  catch(e){$("ref-note").textContent=e.message||"Could not validate this referral.";$("apply-ref").disabled=false;}
+});
+window.legacyRefreshReferralUI = function(data) {
+  if(!data)return;
+  $("referral-count").textContent=String(data.count||0);
+  const list=$("referral-list"); list.innerHTML="";
+  (data.referrals||[]).forEach(item=>{const li=document.createElement("li");li.textContent="@"+String(item.username||"Explorer")+(item.joined_at?" · "+new Date(item.joined_at).toLocaleDateString():"");list.appendChild(li);});
+  $("referral-list-note").textContent=(data.referrals||[]).length?"These explorers joined through your invite link.":"No referred players yet. Share your link to grow your crew.";
+};
+
+setInterval(() => {
+  if (state.energy < 100) {
+    state.energy = Math.min(100, state.energy + 1);
+    update(); save();
+  }
+}, 3000);
+
+const tutorialSteps = [
+  ["WELCOME, EXPLORER.", "This is the LEGACY core. Every tap gathers LGC cosmic energy. Continue your mission below."],
+  ["ENERGY IS SURVIVAL.", "Your energy limits how much you can tap. It regenerates over time."],
+  ["UPGRADE YOUR SYSTEMS.", "Open Boosts to spend your points on upgrades and instant energy refills."],
+  ["COLLECT YOUR STARDUST.", "Visit Earn each day to claim your daily reward. Your journey starts now."]
+];
+let tutorialIndex = 0;
+function startTutorial() {
+  $("tutorial").classList.remove("hidden");
+  showTutorial();
+}
+function showTutorial() {
+  $("tutorial-step").textContent = "INITIATION · " + String(tutorialIndex + 1).padStart(2,"0");
+  $("tutorial-title").textContent = tutorialSteps[tutorialIndex][0];
+  $("tutorial-text").textContent = tutorialSteps[tutorialIndex][1];
+  $("tutorial-next").textContent = tutorialIndex === tutorialSteps.length - 1 ? "START PLAYING →" : "CONTINUE →";
+}
+$("tutorial-next").addEventListener("click", () => {
+  if (tutorialIndex < tutorialSteps.length - 1) {
+    tutorialIndex++;
+    showTutorial();
+  } else {
+    try { localStorage.setItem("legacyTutorialSeen", "true"); } catch(e) {}
+    $("tutorial").classList.add("hidden");
+    message("Your expedition begins now.");
+  }
+});
+
+update();
+renderMissions();
+try {
+  if (localStorage.getItem("legacyIntroSeen") === "true") {
+    intro.classList.add("hidden");
+    $("game").classList.remove("hidden");
+  } else {
+    setTimeout(beginStory, 700);
+  }
+} catch(e) {
+  setTimeout(beginStory, 700);
+}
+</script>
+
+<style>
+#account-gate,#legacy-account-modal,#legacy-buy-modal{position:fixed;inset:0;z-index:200;background:#02040bf2;backdrop-filter:blur(14px);display:grid;place-items:center;padding:18px}
+.auth-card,.account-card,.buy-card{width:min(100%,430px);max-height:90vh;overflow:auto;padding:24px;border:1px solid #8cecff40;border-radius:18px;background:linear-gradient(145deg,#101d36,#070b18);box-shadow:0 0 60px #4d51ff25}
+.auth-card h2,.account-card h2,.buy-card h2{letter-spacing:2px;margin:0 0 8px}
+.auth-card p,.account-card p,.buy-card p{color:#9eaccb;font-size:13px;line-height:1.6}
+.legacy-field{display:block;width:100%;margin:10px 0;padding:13px;border-radius:9px;border:1px solid #8cecff30;background:#030917;color:white}
+.legacy-action{width:100%;margin-top:10px;padding:13px;border-radius:9px;border:1px solid #8cecff60;background:linear-gradient(100deg,#53eaff20,#984bff35);color:#eafcff;font-weight:700}
+.legacy-secondary{background:#10162a}
+.legacy-muted{font-size:11px!important;color:#8595b8!important}
+.legacy-account-pill{display:block;margin-top:8px;color:#9cefff;font-size:10px;overflow-wrap:anywhere}
+.legacy-balance{font-size:24px;font-weight:800;color:#9cefff;margin:12px 0}
+.legacy-qty{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.legacy-qty button{flex:1;min-width:80px;padding:12px 8px;border:1px solid #8cecff35;background:#0a1224;color:white;border-radius:10px}
+.legacy-qty button.selected{border-color:#8cecff;background:#53eaff20}
+</style>
+<div id="account-gate" class="hidden" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+ <div class="auth-card">
+  <div class="kicker">LEGACY IDENTITY PROTOCOL</div><h2 id="auth-title">CREATE YOUR ACCOUNT</h2>
+  <p id="auth-description">Your progress will be tied to your account, not just this browser.</p>
+  <input class="legacy-field" id="auth-username" type="text" autocomplete="nickname" minlength="3" maxlength="20" placeholder="Username (3–20 characters)">
+  <input class="legacy-field" id="auth-referral" type="text" autocomplete="off" maxlength="20" placeholder="Referral username (optional)">
+  <input class="legacy-field" id="auth-email" type="email" autocomplete="email" placeholder="Email address">
+  <input class="legacy-field" id="auth-password" type="password" autocomplete="new-password" minlength="8" placeholder="Password (8+ characters)">
+  <button class="legacy-action" id="auth-signup">CREATE ACCOUNT</button>
+  <button class="legacy-action hidden" id="auth-login">LOG IN</button>
+  <button class="legacy-action legacy-secondary" id="auth-show-login" type="button">ALREADY HAVE AN ACCOUNT? LOG IN</button>
+  <button class="legacy-action legacy-secondary hidden" id="auth-show-signup" type="button">NEW TO LEGACY? CREATE ACCOUNT</button>
+  <button class="legacy-action legacy-secondary hidden" id="auth-reset" type="button">FORGOT PASSWORD? SEND RESET EMAIL</button>
+  <p id="auth-note" aria-live="polite"></p>
+  <p class="legacy-muted">Email confirmation may be required. Password recovery uses your email. This is the web-only version.</p>
+ </div>
+</div>
+<div id="legacy-account-modal" class="hidden" role="dialog" aria-modal="true">
+ <div class="account-card">
+  <div class="kicker">EXPLORER ACCOUNT</div><h2>YOUR IDENTITY</h2>
+  <p id="account-email"></p>
+  <p id="account-username" class="legacy-account-pill"></p>
+  <div class="legacy-balance"><span id="sol-balance">—</span> SOL</div>
+  <p id="wallet-address" class="legacy-muted">No Phantom wallet connected</p>
+  <button class="legacy-action" id="wallet-connect">CONNECT PHANTOM</button>
+  <button class="legacy-action legacy-secondary" id="wallet-disconnect">DISCONNECT WALLET</button>
+  <button class="legacy-action legacy-secondary" id="auth-recovery">EMAIL RECOVERY</button>
+  <button class="legacy-action legacy-secondary" id="auth-logout">LOG OUT</button>
+  <button class="legacy-action legacy-secondary" id="account-close">CLOSE</button>
+  <p id="wallet-note" aria-live="polite"></p>
+ </div>
+</div>
+<div id="legacy-buy-modal" class="hidden" role="dialog" aria-modal="true">
+ <div class="buy-card">
+  <div class="kicker">REACTOR SUPPLY EXCHANGE</div><h2>BUY REFILLS</h2>
+  <p>3 refills cost 0.0069 SOL. Bundles are priced by the server in multiples of 3. Confirm the amount and receiver in Phantom before approving.</p>
+  <div class="legacy-qty">
+   <button data-qty="3" class="selected">3<br><small>0.0069 SOL</small></button>
+   <button data-qty="6">6<br><small>0.0138 SOL</small></button>
+   <button data-qty="9">9<br><small>0.0207 SOL</small></button>
+   <button data-qty="12">12<br><small>0.0276 SOL</small></button>
+   <button data-qty="30">30<br><small>0.0690 SOL</small></button>
+   <button data-qty="60">60<br><small>0.1380 SOL</small></button>
+  </div>
+  <p id="buy-quote">Select quantity to prepare a quote.</p>
+  <button class="legacy-action" id="buy-confirm">CONNECT PHANTOM & PAY</button>
+  <button class="legacy-action legacy-secondary" id="buy-close">CANCEL</button>
+  <p id="buy-note" aria-live="polite"></p>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+<script src="./legacy-account.js"></script>
+</body>
+</html>
