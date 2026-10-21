@@ -4,8 +4,8 @@
  */
 (() => {
 "use strict";
-const SUPABASE_URL = "PASTE_YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://xchqextkzbycfufvjgqc.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "sb_publishable_iQeoanBksIJj3FeJd5gUIA_6IcLxJO9";
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
 const client = configured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const $ = id => document.getElementById(id);
